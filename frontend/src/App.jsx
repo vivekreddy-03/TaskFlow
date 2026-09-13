@@ -7,6 +7,7 @@ function App() {
     const [page, setPage] = useState("login");
     const [token, setToken] = useState(localStorage.getItem("token"));
     const [tasks, setTasks] = useState([]);
+    const [filter, setFilter] = useState("all");
     const [editingTask, setEditingTask] = useState(null);
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState("");
@@ -95,7 +96,7 @@ function App() {
                 setToken(data.token);
                 setPage("dashboard");
                 setMessage("");
-                fetchTasks();
+                await fetchTasks();
             } else {
                 setPage("login");
                 setAuthForm({
@@ -234,12 +235,30 @@ function App() {
         setToken(null);
         setTasks([]);
         setPage("login");
+        setFilter("all");
+
         setAuthForm({
             name: "",
             email: "",
             password: ""
         });
     };
+
+    const totalTasks = tasks.length;
+    const completedTasks = tasks.filter((task) => task.completed).length;
+    const activeTasks = totalTasks - completedTasks;
+
+    const filteredTasks = tasks.filter((task) => {
+        if (filter === "active") {
+            return !task.completed;
+        }
+
+        if (filter === "completed") {
+            return task.completed;
+        }
+
+        return true;
+    });
 
     if (page === "dashboard") {
         return (
@@ -259,7 +278,9 @@ function App() {
                     <section className="hero">
                         <div>
                             <p className="eyebrow">PERSONAL WORKSPACE</p>
+
                             <h1>Manage your work.</h1>
+
                             <p className="hero-text">
                                 Stay organized, track deadlines, and get things
                                 done.
@@ -268,7 +289,24 @@ function App() {
 
                         <div className="stats-card">
                             <span>Total tasks</span>
-                            <strong>{tasks.length}</strong>
+                            <strong>{totalTasks}</strong>
+                        </div>
+                    </section>
+
+                    <section className="stats-grid">
+                        <div className="mini-stat">
+                            <span>Total</span>
+                            <strong>{totalTasks}</strong>
+                        </div>
+
+                        <div className="mini-stat">
+                            <span>Active</span>
+                            <strong>{activeTasks}</strong>
+                        </div>
+
+                        <div className="mini-stat">
+                            <span>Completed</span>
+                            <strong>{completedTasks}</strong>
                         </div>
                     </section>
 
@@ -280,6 +318,7 @@ function App() {
                                 <p className="eyebrow">
                                     {editingTask ? "EDIT TASK" : "NEW TASK"}
                                 </p>
+
                                 <h2>
                                     {editingTask
                                         ? "Update your task"
@@ -292,6 +331,7 @@ function App() {
                                     className="cancel-btn"
                                     onClick={() => {
                                         setEditingTask(null);
+
                                         setTaskForm({
                                             title: "",
                                             description: "",
@@ -353,23 +393,57 @@ function App() {
                             </div>
 
                             <span className="task-count">
-                                {tasks.length}{" "}
-                                {tasks.length === 1 ? "task" : "tasks"}
+                                {filteredTasks.length}{" "}
+                                {filteredTasks.length === 1
+                                    ? "task"
+                                    : "tasks"}
                             </span>
                         </div>
 
-                        {tasks.length === 0 ? (
+                        <div className="filter-bar">
+                            <button
+                                className={filter === "all" ? "active" : ""}
+                                onClick={() => setFilter("all")}
+                            >
+                                All
+                            </button>
+
+                            <button
+                                className={filter === "active" ? "active" : ""}
+                                onClick={() => setFilter("active")}
+                            >
+                                Active
+                            </button>
+
+                            <button
+                                className={
+                                    filter === "completed" ? "active" : ""
+                                }
+                                onClick={() => setFilter("completed")}
+                            >
+                                Completed
+                            </button>
+                        </div>
+
+                        {filteredTasks.length === 0 ? (
                             <div className="empty-state">
                                 <div className="empty-icon">✓</div>
-                                <h3>No tasks yet</h3>
+
+                                <h3>
+                                    {filter === "all"
+                                        ? "No tasks yet"
+                                        : `No ${filter} tasks`}
+                                </h3>
+
                                 <p>
-                                    Create your first task above and start
-                                    getting things done.
+                                    {filter === "all"
+                                        ? "Create your first task above and start getting things done."
+                                        : "Try another filter or create a new task."}
                                 </p>
                             </div>
                         ) : (
                             <div className="task-list">
-                                {tasks.map((task) => (
+                                {filteredTasks.map((task) => (
                                     <article
                                         className={`task-card ${
                                             task.completed ? "completed" : ""

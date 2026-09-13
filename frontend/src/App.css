@@ -34,7 +34,8 @@
 
 .logout-btn,
 .cancel-btn,
-.task-actions button {
+.task-actions button,
+.filter-bar button {
     border: 0;
     background: transparent;
     cursor: pointer;
@@ -57,7 +58,7 @@
     justify-content: space-between;
     align-items: flex-end;
     gap: 30px;
-    margin-bottom: 38px;
+    margin-bottom: 25px;
 }
 
 .eyebrow {
@@ -98,6 +99,31 @@
     display: block;
     font-size: 32px;
     margin-top: 4px;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 30px;
+}
+
+.mini-stat {
+    background: #fff;
+    border: 1px solid #e5e2dc;
+    border-radius: 15px;
+    padding: 17px 20px;
+}
+
+.mini-stat span {
+    display: block;
+    color: #85827c;
+    font-size: 12px;
+    margin-bottom: 5px;
+}
+
+.mini-stat strong {
+    font-size: 25px;
 }
 
 .task-form-card {
@@ -183,6 +209,30 @@ textarea {
 .task-count {
     font-size: 13px;
     color: #77736d;
+}
+
+.filter-bar {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 15px;
+    padding: 5px;
+    width: fit-content;
+    background: #ebe9e3;
+    border-radius: 11px;
+}
+
+.filter-bar button {
+    padding: 8px 14px;
+    border-radius: 8px;
+    color: #6e6b65;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.filter-bar button.active {
+    background: white;
+    color: #171717;
+    box-shadow: 0 2px 7px rgba(0, 0, 0, 0.06);
 }
 
 .task-list {
@@ -367,6 +417,10 @@ textarea {
     .stats-card {
         width: 100%;
         box-sizing: border-box;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
     }
 
     .form-row {
